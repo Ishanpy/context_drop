@@ -2,14 +2,16 @@ export default function DashboardLayout({
   children,
 }) {
   return (
-    <div className="min-h-screen bg-navy text-white">
-
-      <div className="flex">
-
-        {children}
-
-      </div>
-
+    <div
+      className="
+        h-screen
+        flex
+        overflow-hidden
+        bg-navy
+        text-white
+      "
+    >
+      {children}
     </div>
   );
 }

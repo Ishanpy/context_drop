@@ -14,8 +14,26 @@ export async function askRepositoryQuestion(
 
         tag: "system",
 
-        description:
-          "Repository uses modular React frontend with centralized AI orchestration.",
+        description: `
+# Architecture Insight
+
+The repository uses:
+
+- React frontend
+- Zustand global state
+- React Query orchestration
+- Tailwind dashboard UI
+
+## Recommendation
+
+Refactor API orchestration into modular services.
+
+\`\`\`js
+export async function analyzeRepo() {
+  return insights;
+}
+\`\`\`
+`,
       },
 
       {
@@ -23,8 +41,23 @@ export async function askRepositoryQuestion(
 
         tag: "risk",
 
-        description:
-          "Potential scalability issue detected in ingestion workflow.",
+        description: `
+# Risk Detection
+
+Potential scalability concerns detected.
+
+## Findings
+
+- API retries missing
+- No request cancellation
+- Missing optimistic updates
+
+\`\`\`js
+const mutation = useMutation({
+  mutationFn: askRepositoryQuestion,
+});
+\`\`\`
+`,
       },
 
       {
@@ -32,8 +65,22 @@ export async function askRepositoryQuestion(
 
         tag: "developer",
 
-        description:
-          "Recommended onboarding begins from repository parser service.",
+        description: `
+# Developer Onboarding
+
+Suggested onboarding sequence:
+
+1. Review frontend architecture
+2. Understand Zustand store
+3. Learn API orchestration
+4. Study dashboard layout system
+
+## Important Files
+
+- \`DashboardPage.jsx\`
+- \`useAppStore.js\`
+- \`queries.js\`
+`,
       },
     ],
   };

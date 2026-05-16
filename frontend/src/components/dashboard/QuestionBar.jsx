@@ -8,6 +8,9 @@ import {
 
 import useAppStore from "../../stores/useAppStore";
 
+import toast from "react-hot-toast";
+
+
 export default function QuestionBar() {
   const {
     question,
@@ -25,11 +28,19 @@ export default function QuestionBar() {
     },
 
     onSuccess: (data) => {
-      setResponses(data.responses || []);
+        setResponses(data.responses || []);
+
+        toast.success(
+            "Repository insights generated"
+        );
     },
 
     onError: (error) => {
-      console.error(error);
+        console.error(error);
+
+        toast.error(
+            "Failed to generate insights"
+        );
     },
 
     onSettled: () => {
@@ -69,7 +80,7 @@ export default function QuestionBar() {
           border-border
           rounded-2xl
           px-5
-          py-4
+          py-3
           outline-none
         "
       />
@@ -78,7 +89,7 @@ export default function QuestionBar() {
         onClick={handleSubmit}
         className="
           bg-blue
-          p-4
+          px-5 py-3
           rounded-2xl
           hover:opacity-90
           transition

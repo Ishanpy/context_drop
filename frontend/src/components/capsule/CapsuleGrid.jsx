@@ -4,11 +4,53 @@ import LoadingSkeleton from "../common/LoadingSkeleton";
 
 import useAppStore from "../../stores/useAppStore";
 
+import TypingIndicator from "../common/TypingIndicator";
+
 export default function CapsuleGrid() {
   const {
     responses,
     isLoading,
+    isStreaming,
+
   } = useAppStore();
+
+  
+  if (isStreaming) {
+  return (
+    <div
+      className="
+        mt-10
+        bg-panel
+        border
+        border-border
+        rounded-3xl
+        p-8
+      "
+    >
+
+      <h2
+        className="
+          text-2xl
+          font-semibold
+        "
+      >
+        AI is analyzing repository...
+      </h2>
+
+      <p
+        className="
+          text-gray-400
+          mt-3
+        "
+      >
+        Generating contextual engineering insights.
+      </p>
+
+      <TypingIndicator />
+
+    </div>
+  );
+}
 
   if (isLoading) {
     return (
@@ -17,6 +59,7 @@ export default function CapsuleGrid() {
           grid
           grid-cols-1
           lg:grid-cols-2
+          2xl:grid-cols-3
           gap-6
           mt-10
         "

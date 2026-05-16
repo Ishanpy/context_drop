@@ -1,3 +1,4 @@
+import MarkdownRenderer from "../markdown/MarkdownRenderer";
 export default function CapsuleCard({
   title,
   description,
@@ -50,7 +51,9 @@ export default function CapsuleCard({
           leading-relaxed
         "
       >
-        {description}
+        <MarkdownRenderer
+            content={description}
+        />
       </p>
 
     </div>

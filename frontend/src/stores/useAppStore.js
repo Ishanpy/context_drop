@@ -11,6 +11,10 @@ const useAppStore = create((set) => ({
 
   isLoading: false,
 
+  isStreaming: false,
+
+  sidebarOpen: true,
+
   setQuestion: (value) =>
     set({ question: value }),
 
@@ -25,6 +29,11 @@ const useAppStore = create((set) => ({
 
   setIsLoading: (value) =>
     set({ isLoading: value }),
+
+  toggleSidebar: () =>
+    set((state) => ({
+        sidebarOpen: !state.sidebarOpen,
+  })),
 }));
 
 export default useAppStore;
