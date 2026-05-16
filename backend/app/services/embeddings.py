@@ -1,44 +1,46 @@
-import voyageai
+from google import genai
+from google.genai import types
 from app.config import get_settings
 
 settings = get_settings()
-_client = voyageai.Client(api_key=settings.voyage_api_key)
+_client = genai.Client(api_key=settings.gemini_api_key)
 
 
 async def embed_code(texts: list[str]) -> list[list[float]]:
-    """Embed code chunks using voyage-code-2 (1536 dimensions)."""
     if not texts:
         return []
-    result = _client.embed(
-        texts,
-        model="voyage-code-2",
-        input_type="document"
+    response = _client.models.embed_content(
+        model="gemini-embedding-001",
+        contents=texts[0],
+        config=types.EmbedContentConfig(
+            task_type="RETRIEVAL_DOCUMENT",
+            output_dimensionality=768
+        )
     )
-    return result.embeddings
+    return [response.embeddings[0].values]
 
 
 async def embed_text(texts: list[str]) -> list[list[float]]:
-    """Embed natural language (commits, tickets, docs) using voyage-3."""
     if not texts:
         return []
-    result = _client.embed(
-        texts,
-        model="voyage-3",
-        input_type="document"
+    response = _client.models.embed_content(
+        model="gemini-embedding-001",
+        contents=texts[0],
+        config=types.EmbedContentConfig(
+            task_type="RETRIEVAL_DOCUMENT",
+            output_dimensionality=768
+        )
     )
-    return result.embeddings
+    return [response.embeddings[0].values]
 
 
 async def embed_query(text: str, kind: str = "code") -> list[float]:
-    """
-    Embed a search query for retrieval.
-    kind: code — uses voyage-code-2
-    kind: text — uses voyage-3
-    """
-    model = "voyage-code-2" if kind == "code" else "voyage-3"
-    result = _client.embed(
-        [text],
-        model=model,
-        input_type="query"
+    response = _client.models.embed_content(
+        model="gemini-embedding-001",
+        contents=text,
+        config=types.EmbedContentConfig(
+            task_type="RETRIEVAL_QUERY",
+            output_dimensionality=768
+        )
     )
-    return result.embeddings[0]
+    return response.embeddings[0].values

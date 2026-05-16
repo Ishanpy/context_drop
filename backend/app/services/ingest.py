@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 from pathlib import Path
-from app.core.database import SessionLocal
+from app.core.database import SessionLocal, engine
 from app.ingestion.chunker import chunk_file
 from app.ingestion.git_parser import parse_file_history, get_file_authors
 from app.ingestion.pii import scrub
@@ -28,14 +28,13 @@ async def ingest_repo(repo_path: str, repo_id: str) -> dict:
         and ".git" not in f.parts
         and "node_modules" not in f.parts
         and "__pycache__" not in f.parts
-    ][:200]
+    ][:20]
 
     total_chunks = 0
     total_intent = 0
     failed_files = []
 
     for fpath in code_files:
-        db = SessionLocal()
         try:
             content = fpath.read_text(errors="ignore")
             if not content.strip():
@@ -46,28 +45,35 @@ async def ingest_repo(repo_path: str, repo_id: str) -> dict:
             history = parse_file_history(str(repo_path), rel_path)
             chunks = chunk_file(rel_path, content)
 
-            for chunk in chunks:
+            for chunk in chunks[:1]:
                 clean = scrub(chunk["content"])
-                embeddings = await embed_code([clean])
-                if not embeddings:
+                try:
+                    embeddings = await embed_code([clean])
+                    if not embeddings:
+                        continue
+                    emb_str = "[" + ",".join(str(x) for x in embeddings[0]) + "]"
+                    with engine.connect() as conn:
+                        conn.execute(sa.text(
+                            "INSERT INTO code_chunks "
+                            "(repo_id, file_path, language, author, start_line, end_line, content, embedding) "
+                            "VALUES (:rid, :fp, :lang, :auth, :sl, :el, :c, CAST(:e AS vector))"
+                        ), {
+                            "rid": repo_id,
+                            "fp": rel_path,
+                            "lang": chunk["language"],
+                            "auth": authors[0] if authors else "unknown",
+                            "sl": chunk["start_line"],
+                            "el": chunk["end_line"],
+                            "c": clean,
+                            "e": emb_str
+                        })
+                        conn.commit()
+                    total_chunks += 1
+                except Exception as e:
+                    log.error("chunk_embed_failed", error=str(e)[:120])
                     continue
-                db.execute(sa.text("""
-                    INSERT INTO code_chunks
-                    (repo_id, file_path, language, author, start_line, end_line, content, embedding)
-                    VALUES (:rid, :fp, :lang, :auth, :sl, :el, :c, :e::vector)
-                """), {
-                    "rid": repo_id,
-                    "fp": rel_path,
-                    "lang": chunk["language"],
-                    "auth": authors[0] if authors else "unknown",
-                    "sl": chunk["start_line"],
-                    "el": chunk["end_line"],
-                    "c": clean,
-                    "e": str(embeddings[0])
-                })
-                total_chunks += 1
 
-            for commit in history[:20]:
+            for commit in history[:1]:
                 clean_msg = scrub(commit["message"])
                 intent_text = (
                     f"File: {rel_path}\n"
@@ -77,32 +83,36 @@ async def ingest_repo(repo_path: str, repo_id: str) -> dict:
                     f"Is fix: {commit.get('is_fix', False)}\n"
                     f"Is revert: {commit.get('is_revert', False)}"
                 )
-                embeddings = await embed_text([intent_text])
-                if not embeddings:
+                try:
+                    embeddings = await embed_text([intent_text])
+                    if not embeddings:
+                        continue
+                    emb_str = "[" + ",".join(str(x) for x in embeddings[0]) + "]"
+                    meta = json.dumps({"author": commit["author"], "file": rel_path})
+                    with engine.connect() as conn:
+                        conn.execute(sa.text(
+                            "INSERT INTO intent_chunks "
+                            "(repo_id, source_type, source_ref, content, metadata, embedding) "
+                            "VALUES (:rid, :st, :sr, :c, CAST(:m AS jsonb), CAST(:e AS vector))"
+                        ), {
+                            "rid": repo_id,
+                            "st": "commit",
+                            "sr": commit["hash"],
+                            "c": intent_text,
+                            "m": meta,
+                            "e": emb_str
+                        })
+                        conn.commit()
+                    total_intent += 1
+                except Exception as e:
+                    log.error("intent_embed_failed", error=str(e)[:120])
                     continue
-                db.execute(sa.text("""
-                    INSERT INTO intent_chunks
-                    (repo_id, source_type, source_ref, content, metadata, embedding)
-                    VALUES (:rid, :st, :sr, :c, :m::jsonb, :e::vector)
-                """), {
-                    "rid": repo_id,
-                    "st": "commit",
-                    "sr": commit["hash"],
-                    "c": intent_text,
-                    "m": json.dumps({"author": commit["author"], "file": rel_path}),
-                    "e": str(embeddings[0])
-                })
-                total_intent += 1
 
-            db.commit()
             log.info("ingested", file=rel_path)
 
         except Exception as e:
             failed_files.append(str(fpath))
-            log.error("ingest_failed", file=str(fpath), error=str(e))
-            db.rollback()
-        finally:
-            db.close()
+            log.error("ingest_failed", error=str(e)[:120])
 
     return {
         "repo_id": repo_id,
