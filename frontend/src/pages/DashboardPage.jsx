@@ -10,6 +10,8 @@ import ArchitectureHeatmap from "../components/dashboard/ArchitectureHeatmap";
 
 import TicketPanel from "../components/ticket/TicketPanel";
 
+import MobileTopbar from "../components/dashboard/MobileTopbar";
+
 export default function DashboardPage() {
   return (
     <main
@@ -19,6 +21,7 @@ export default function DashboardPage() {
         overflow-y-auto
       "
     >
+        <MobileTopbar />
 
       <div
         className="

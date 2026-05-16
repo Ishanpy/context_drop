@@ -15,6 +15,9 @@ const useAppStore = create((set) => ({
 
   sidebarOpen: true,
 
+  mobileSidebarOpen: false,
+
+
   setQuestion: (value) =>
     set({ question: value }),
 
@@ -30,9 +33,17 @@ const useAppStore = create((set) => ({
   setIsLoading: (value) =>
     set({ isLoading: value }),
 
+  setIsStreaming: (value) =>
+    set({ isStreaming: value }),
+
   toggleSidebar: () =>
     set((state) => ({
         sidebarOpen: !state.sidebarOpen,
+  })),
+  toggleMobileSidebar: () =>
+    set((state) => ({
+        mobileSidebarOpen:
+            !state.mobileSidebarOpen,
   })),
 }));
 
