@@ -7,14 +7,24 @@ export default function CapsuleCard({
   return (
     <div
       className="
-        bg-panel
+        bg-panel/80
+        backdrop-blur-xl
+
         border
-        border-border
+        border-white/5
+
         rounded-3xl
         p-6
-        hover:border-blue
-        transition
-      "
+
+        shadow-glow
+
+        hover:scale-[1.015]
+        hover:border-blue/30
+        hover:shadow-2xl
+
+        transition-all
+        duration-300
+    "
     >
 
       <div className="flex items-center justify-between">

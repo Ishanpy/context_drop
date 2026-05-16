@@ -35,12 +35,22 @@ export default function RepoAnalytics() {
         <div
           key={stat.label}
           className="
-            bg-panel
+            bg-panel/80
+            backdrop-blur-xl
+
             border
-            border-border
+            border-white/5
+
             rounded-3xl
             p-6
-          "
+
+            shadow-glow
+
+            hover:translate-y-[-4px]
+            hover:border-blue/30
+
+            transition-all
+        "
         >
 
           <p

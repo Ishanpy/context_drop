@@ -49,20 +49,24 @@ export default function DashboardPage() {
             AI Repository Intelligence
           </h1>
 
-          <p
+        <p
             className="
-              mt-6
-              text-gray-400
-              text-lg
-              leading-relaxed
-              max-w-3xl
+                mt-6
+                text-gray-400
+
+                text-base
+                lg:text-lg
+
+                leading-relaxed
+                max-w-3xl
             "
-          >
-            Understand repositories,
-            architecture, onboarding paths,
-            risks, and engineering workflows
-            using AI-powered repository analysis.
-          </p>
+        >
+                Understand repositories,
+                architecture, onboarding paths,
+                risks, and engineering workflows
+                using AI-powered repository analysis.
+            </p>
+          
 
         </section>
 

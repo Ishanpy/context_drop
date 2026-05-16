@@ -15,6 +15,9 @@ export default {
         panel: "#111827",
         border: "#1F2937",
       },
+      boxShadow: {
+      glow: "0 0 40px rgba(59,130,246,0.15)",
+      },
     },
   },
 
