@@ -5,7 +5,17 @@ const useAppStore = create((set) => ({
 
   selectedRepo: "context_drop",
 
+  question: "",
+
+  responses: [],
+
   isLoading: false,
+
+  setQuestion: (value) =>
+    set({ question: value }),
+
+  setResponses: (responses) =>
+    set({ responses }),
 
   setSelectedLens: (lens) =>
     set({ selectedLens: lens }),

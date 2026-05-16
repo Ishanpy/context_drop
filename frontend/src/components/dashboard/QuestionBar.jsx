@@ -1,6 +1,51 @@
 import { Send } from "lucide-react";
 
+import { useMutation } from "@tanstack/react-query";
+
+import {
+  askRepositoryQuestion,
+} from "../../api/queries";
+
+import useAppStore from "../../stores/useAppStore";
+
 export default function QuestionBar() {
+  const {
+    question,
+    setQuestion,
+    setResponses,
+    setIsLoading,
+    selectedLens,
+  } = useAppStore();
+
+  const mutation = useMutation({
+    mutationFn: askRepositoryQuestion,
+
+    onMutate: () => {
+      setIsLoading(true);
+    },
+
+    onSuccess: (data) => {
+      setResponses(data.responses || []);
+    },
+
+    onError: (error) => {
+      console.error(error);
+    },
+
+    onSettled: () => {
+      setIsLoading(false);
+    },
+  });
+
+  function handleSubmit() {
+    if (!question.trim()) return;
+
+    mutation.mutate({
+      question,
+      lens: selectedLens,
+    });
+  }
+
   return (
     <div
       className="
@@ -12,6 +57,10 @@ export default function QuestionBar() {
     >
       <input
         type="text"
+        value={question}
+        onChange={(e) =>
+          setQuestion(e.target.value)
+        }
         placeholder="Ask ContextDrop about the repository..."
         className="
           flex-1
@@ -26,6 +75,7 @@ export default function QuestionBar() {
       />
 
       <button
+        onClick={handleSubmit}
         className="
           bg-blue
           p-4

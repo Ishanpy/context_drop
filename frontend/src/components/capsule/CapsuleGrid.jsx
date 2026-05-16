@@ -1,57 +1,66 @@
-import { useEffect, useState } from "react";
-
 import CapsuleCard from "./CapsuleCard";
+
 import LoadingSkeleton from "../common/LoadingSkeleton";
 
-const capsules = [
-  {
-    title: "Architecture Overview",
-
-    tag: "system",
-
-    description:
-      "Repository follows a modular architecture using React frontend, FastAPI backend, and AI summarization pipelines.",
-  },
-
-  {
-    title: "Risk Detection",
-
-    tag: "risk",
-
-    description:
-      "Potential coupling detected between repository parsing and summarization pipelines.",
-  },
-
-  {
-    title: "Suggested Refactor",
-
-    tag: "improvement",
-
-    description:
-      "Separate AI orchestration layer from ingestion services to improve maintainability.",
-  },
-
-  {
-    title: "Onboarding Insight",
-
-    tag: "developer",
-
-    description:
-      "New developers should begin from API orchestration and repository ingestion flow.",
-  },
-];
+import useAppStore from "../../stores/useAppStore";
 
 export default function CapsuleGrid() {
-  const [loading, setLoading] =
-    useState(true);
+  const {
+    responses,
+    isLoading,
+  } = useAppStore();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
+  if (isLoading) {
+    return (
+      <div
+        className="
+          grid
+          grid-cols-1
+          lg:grid-cols-2
+          gap-6
+          mt-10
+        "
+      >
+        {Array.from({ length: 4 }).map(
+          (_, index) => (
+            <LoadingSkeleton
+              key={index}
+            />
+          )
+        )}
+      </div>
+    );
+  }
 
-    return () => clearTimeout(timer);
-  }, []);
+  if (!responses.length) {
+    return (
+      <div
+        className="
+          mt-10
+          bg-panel
+          border
+          border-border
+          rounded-3xl
+          p-10
+          text-center
+        "
+      >
+        <h2 className="text-2xl font-semibold">
+          Ask your first repository question
+        </h2>
+
+        <p
+          className="
+            text-gray-400
+            mt-4
+          "
+        >
+          ContextDrop will generate
+          AI-powered repository insights.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -63,24 +72,16 @@ export default function CapsuleGrid() {
         mt-10
       "
     >
-      {loading
-        ? Array.from({ length: 4 }).map(
-            (_, index) => (
-              <LoadingSkeleton
-                key={index}
-              />
-            )
-          )
-        : capsules.map((capsule) => (
-            <CapsuleCard
-              key={capsule.title}
-              title={capsule.title}
-              tag={capsule.tag}
-              description={
-                capsule.description
-              }
-            />
-          ))}
+      {responses.map((response) => (
+        <CapsuleCard
+          key={response.title}
+          title={response.title}
+          tag={response.tag}
+          description={
+            response.description
+          }
+        />
+      ))}
     </div>
   );
 }
