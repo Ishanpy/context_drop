@@ -1,19 +1,20 @@
-from presidio_analyzer import AnalyzerEngine
-from presidio_anonymizer import AnonymizerEngine
+import re
 
-_analyzer = AnalyzerEngine()
-_anonymizer = AnonymizerEngine()
+_PATTERNS = [
+    (r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', '<EMAIL>'),
+    (r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', '<PHONE>'),
+    (r'\b(?:sk-|pk-|rk-)[a-zA-Z0-9]{20,}\b', '<API_KEY>'),
+    (r'\bghp_[a-zA-Z0-9]{36}\b', '<GITHUB_TOKEN>'),
+    (r'\b[A-Z0-9]{20}\b', '<ACCESS_KEY>'),
+    (r'password\s*=\s*["\']?.+?["\']?[\s,;]', '<PASSWORD>'),
+    (r'secret\s*=\s*["\']?.+?["\']?[\s,;]', '<SECRET>'),
+]
 
 
 def scrub(text: str) -> str:
-    """Remove PII (emails, phone numbers, names) from text before storing."""
+    """Remove PII and secrets from text before storing."""
     if not text:
         return text
-    try:
-        results = _analyzer.analyze(text=text, language="en")
-        if not results:
-            return text
-        anonymized = _anonymizer.anonymize(text=text, analyzer_results=results)
-        return anonymized.text
-    except Exception:
-        return text
+    for pattern, replacement in _PATTERNS:
+        text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+    return text
