@@ -1,5 +1,6 @@
 import LensSwitcher from "../components/dashboard/LensSwitcher";
 import QuestionBar from "../components/dashboard/QuestionBar";
+import CapsuleGrid from "../components/capsule/CapsuleGrid";
 
 export default function DashboardPage() {
   return (
@@ -34,6 +35,8 @@ export default function DashboardPage() {
       </div>
 
       <QuestionBar />
+
+      <CapsuleGrid />
 
     </div>
   );
