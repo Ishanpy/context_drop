@@ -1,20 +1,14 @@
+import Sidebar from "./components/dashboard/Sidebar";
 import DashboardLayout from "./layouts/DashboardLayout";
+import DashboardPage from "./pages/DashboardPage";
 
 export default function App() {
   return (
     <DashboardLayout>
 
-      <div className="p-10">
+      <Sidebar />
 
-        <h1 className="text-5xl font-bold text-blue">
-          ContextDrop
-        </h1>
-
-        <p className="mt-4 text-gray-400">
-          AI-powered repository intelligence
-        </p>
-
-      </div>
+      <DashboardPage />
 
     </DashboardLayout>
   );
