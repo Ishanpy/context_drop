@@ -1,21 +1,16 @@
 import git
 from collections import defaultdict
 from datetime import datetime
+import re
 
 
 # ─────────────────────────────────────────────
 # FILE-LEVEL HISTORY
 # ─────────────────────────────────────────────
 def parse_file_history(repo_path: str, file_path: str, max_commits: int = 30) -> list[dict]:
-    """
-    Get structured commit history for a specific file.
-    Extracts: hash, author, date, message, lines added/removed,
-    and any Jira-style ticket references in the commit message.
-    """
     try:
         repo = git.Repo(repo_path)
         commits = []
-
         for commit in repo.iter_commits(paths=file_path, max_count=max_commits):
             stats = commit.stats.files.get(file_path, {})
             commits.append({
@@ -31,7 +26,6 @@ def parse_file_history(repo_path: str, file_path: str, max_commits: int = 30) ->
                 "is_fix": _is_fix_commit(commit.message),
                 "is_revert": _is_revert_commit(commit.message),
             })
-
         return commits
     except Exception:
         return []
@@ -41,10 +35,6 @@ def parse_file_history(repo_path: str, file_path: str, max_commits: int = 30) ->
 # AUTHOR ANALYSIS
 # ─────────────────────────────────────────────
 def get_file_authors(repo_path: str, file_path: str) -> list[str]:
-    """
-    Get unique authors ordered by number of commits to this file.
-    Most active author first — Bob uses this for who_knows.
-    """
     history = parse_file_history(repo_path, file_path)
     author_counts = defaultdict(int)
     for commit in history:
@@ -53,7 +43,6 @@ def get_file_authors(repo_path: str, file_path: str) -> list[str]:
 
 
 def get_author_commit_counts(repo_path: str, file_path: str) -> dict[str, int]:
-    """Returns {author_name: commit_count} for a file."""
     history = parse_file_history(repo_path, file_path)
     counts = defaultdict(int)
     for commit in history:
@@ -65,19 +54,12 @@ def get_author_commit_counts(repo_path: str, file_path: str) -> dict[str, int]:
 # BUS FACTOR
 # ─────────────────────────────────────────────
 def bus_factor(repo_path: str, max_commits: int = 500) -> dict[str, int]:
-    """
-    Calculate bus factor per file across the repo.
-    Returns: {file_path: number_of_unique_authors}
-    Sorted ascending — lowest bus factor (highest risk) first.
-    """
     try:
         repo = git.Repo(repo_path)
         file_authors = defaultdict(set)
-
         for commit in repo.iter_commits(max_count=max_commits):
             for file in commit.stats.files:
                 file_authors[file].add(commit.author.name)
-
         scores = {f: len(authors) for f, authors in file_authors.items()}
         return dict(sorted(scores.items(), key=lambda x: x[1]))
     except Exception:
@@ -85,7 +67,6 @@ def bus_factor(repo_path: str, max_commits: int = 500) -> dict[str, int]:
 
 
 def get_risk_level(author_count: int) -> str:
-    """Convert author count to risk label for the frontend."""
     if author_count == 1:
         return "high"
     elif author_count == 2:
@@ -94,14 +75,9 @@ def get_risk_level(author_count: int) -> str:
 
 
 # ─────────────────────────────────────────────
-# FORMAT FOR BOB — structured context strings
+# FORMAT FOR BOB
 # ─────────────────────────────────────────────
 def format_history_for_bob(commits: list[dict]) -> str:
-    """
-    Format commit history into a structured string Bob can reason over.
-    Groups by: fixes, reverts, feature commits, and ticket references.
-    Bob uses this to answer WHY the code looks the way it does.
-    """
     if not commits:
         return "No commit history available for this file."
 
@@ -130,7 +106,7 @@ def format_history_for_bob(commits: list[dict]) -> str:
 
     if regular:
         sections.append("\n=== FEATURE COMMITS ===")
-        for c in regular[:10]:  # cap at 10 to stay within Bob's context window
+        for c in regular[:10]:
             sections.append(_format_commit_line(c))
 
     sections.append(f"\n=== SUMMARY ===")
@@ -138,7 +114,6 @@ def format_history_for_bob(commits: list[dict]) -> str:
     sections.append(f"Bug fixes: {len(fixes)}")
     sections.append(f"Reverts: {len(reverts)}")
     sections.append(f"Ticket-linked: {len(ticket_commits)}")
-
     authors = list({c["author"] for c in commits})
     sections.append(f"Authors involved: {', '.join(authors)}")
 
@@ -150,11 +125,6 @@ def format_departure_context_for_bob(
     engineer_name: str,
     bus_factor_scores: dict[str, int]
 ) -> str:
-    """
-    Build a departure brief context string for Bob.
-    Finds all files where the engineer is the only author.
-    Includes their commit messages so Bob understands what they built.
-    """
     sole_ownership = []
     for file_path, author_count in bus_factor_scores.items():
         if author_count == 1:
@@ -172,7 +142,35 @@ def format_departure_context_for_bob(
     lines = [f"=== DEPARTURE BRIEF CONTEXT FOR: {engineer_name} ===\n"]
     lines.append(f"Files with sole ownership ({len(sole_ownership)} total):\n")
 
-    for item in sole_ownership[:15]:  # cap at 15 for Bob's context window
+    for item in sole_ownership[:15]:
         lines.append(f"FILE: {item['file']}")
         for c in item["commits"][:5]:
-            lines.ap
+            lines.append(f"  [{c['hash']}] {c['date']} — {c['message']}")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+# ─────────────────────────────────────────────
+# HELPERS
+# ─────────────────────────────────────────────
+def _format_commit_line(commit: dict) -> str:
+    added = commit.get("lines_added", 0)
+    removed = commit.get("lines_removed", 0)
+    return (
+        f"  [{commit['hash']}] {commit['date']} — {commit['author']}: "
+        f"{commit['message']} (+{added}/-{removed})"
+    )
+
+
+def _extract_ticket_refs(message: str) -> list[str]:
+    return re.findall(r'\b[A-Z]{2,10}-\d+\b', message)
+
+
+def _is_fix_commit(message: str) -> bool:
+    keywords = ["fix", "bug", "patch", "hotfix", "repair", "resolve", "revert"]
+    return any(k in message.lower() for k in keywords)
+
+
+def _is_revert_commit(message: str) -> bool:
+    return message.lower().strip().startswith("revert")
