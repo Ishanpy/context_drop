@@ -10,7 +10,7 @@ import useAppStore from "../../stores/useAppStore";
 
 import toast from "react-hot-toast";
 
-
+import { streamText } from "../../utils/streamText";
 
 
 export default function QuestionBar() {
@@ -24,6 +24,7 @@ export default function QuestionBar() {
 
   const {
     addMessage,
+    setStreaming,
         } = useAppStore();
 
   const mutation = useMutation({
@@ -83,32 +84,73 @@ export default function QuestionBar() {
 
   setQuestion("");
 
-  setTimeout(() => {
+  setStreaming(true);
 
-    addMessage({
-      id: Date.now() + 1,
+const aiMessageId =
+  Date.now() + 1;
 
-      role: "assistant",
+addMessage({
+  id: aiMessageId,
 
-      content: `
+  role: "assistant",
+
+  content: "",
+});
+
+const aiResponse = `
 # Repository Analysis
 
 This repository contains:
 
 - React frontend architecture
-- Zustand state management
-- Modular dashboard systems
-- AI interaction patterns
+- Zustand global state
+- Repository explorer systems
+- AI interaction workflows
 
-## Suggested Improvements
+## Engineering Recommendations
 
 \`\`\`js
-const improvedArchitecture = true;
+const scalableArchitecture = true;
 \`\`\`
-      `,
-    });
 
-  }, 1000);
+## Risk Analysis
+
+- Improve backend caching
+- Add repository indexing
+- Implement vector search
+`;
+
+await streamText({
+
+  text: aiResponse,
+
+  delay: 10,
+
+  onChunk: (chunk) => {
+
+    useAppStore.setState(
+      (state) => ({
+
+        messages:
+          state.messages.map(
+            (message) =>
+
+              message.id === aiMessageId
+                ? {
+                    ...message,
+                    content: chunk,
+                  }
+                : message
+          ),
+
+      })
+    );
+
+  },
+
+});
+
+setStreaming(false);
 
 };
 
