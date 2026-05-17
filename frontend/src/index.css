@@ -22,11 +22,14 @@ html {
 
 body {
   overflow: hidden;
-}
 
-body {
-  background: #0B1020;
+  background: #020617;
+
   color: white;
+
   margin: 0;
-  font-family: Inter, sans-serif;
+
+  font-family:
+    Inter,
+    sans-serif;
 }
