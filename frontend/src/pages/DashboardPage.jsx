@@ -22,6 +22,8 @@ import ErrorState from "../components/feedback/ErrorState";
 
 import useAppStore from "../stores/useAppStore";
 
+import ArchitectureGraph from "../components/dashboard/ArchitectureGraph";
+
 export default function DashboardPage() {
     const {error} = 
        useAppStore();
@@ -40,11 +42,12 @@ export default function DashboardPage() {
 
       <div
         className="
-          max-w-7xl
+          max-w-[1600px]
           mx-auto
 
-          px-6
-          lg:px-10
+         px-4
+        sm:px-6
+        lg:px-10
 
           py-10
         "
@@ -56,8 +59,10 @@ export default function DashboardPage() {
 
           <h1
             className="
-              text-4xl
-              lg:text-6xl
+            text-3xl
+            sm:text-4xl
+            lg:text-6xl
+              
 
               font-bold
 
@@ -155,6 +160,11 @@ export default function DashboardPage() {
         <section className="mt-12">
 
           <RepoAnalytics />
+          <section className="mt-12">
+
+  <ArchitectureGraph />
+
+</section>
 
         </section>
 
