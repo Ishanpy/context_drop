@@ -2,6 +2,8 @@ import ExplorerTree from "./ExplorerTree";
 
 import { repositoryTree } from "../../mock/repositoryTree";
 
+import ExplorerSearch from "./ExplorerSearch";
+
 export default function RepoExplorer() {
   return (
     <div
@@ -52,6 +54,7 @@ export default function RepoExplorer() {
         flex-1
     "
     >
+        <ExplorerSearch />
         <div
   className="
     overflow-y-auto

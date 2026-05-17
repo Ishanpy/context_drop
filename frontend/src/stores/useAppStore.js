@@ -11,6 +11,8 @@ const useAppStore = create((set) => ({
 
   activeFile: null,
 
+  searchQuery: "",
+
   isLoading: false,
 
   isStreaming: false,
@@ -28,6 +30,9 @@ const useAppStore = create((set) => ({
 
   setActiveFile: (file) =>
     set({ activeFile: file }),
+
+  setSearchQuery: (query) =>
+    set({ searchQuery: query }),
 
   setSelectedLens: (lens) =>
     set({ selectedLens: lens }),
