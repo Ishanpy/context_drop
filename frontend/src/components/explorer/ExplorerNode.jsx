@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import useAppStore from "../../stores/useAppStore";
+
 import {
   ChevronRight,
   ChevronDown,
@@ -17,13 +19,23 @@ export default function ExplorerNode({
   const isFolder =
     node.type === "folder";
 
+  const {
+    activeFile,
+    setActiveFile,
+  } = useAppStore();
+
   return (
     <div>
 
       <button
-        onClick={() =>
-          isFolder && setOpen(!open)
-        }
+        onClick={() => {
+
+          if (isFolder) {
+            setOpen(!open);
+          } else {
+            setActiveFile(node.name);
+          }
+        }}
 
         className="
           w-full

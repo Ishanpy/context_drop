@@ -14,6 +14,8 @@ import MobileTopbar from "../components/dashboard/MobileTopbar";
 
 import RepoExplorer from "../components/explorer/RepoExplorer";
 
+import CodePreview from "../components/explorer/CodePreview";
+
 export default function DashboardPage() {
   return (
     <main
@@ -113,6 +115,8 @@ export default function DashboardPage() {
           <TicketPanel />
 
           <RepoExplorer />
+
+          <CodePreview />
 
         </section>
 

@@ -9,6 +9,8 @@ const useAppStore = create((set) => ({
 
   responses: [],
 
+  activeFile: null,
+
   isLoading: false,
 
   isStreaming: false,
@@ -23,6 +25,9 @@ const useAppStore = create((set) => ({
 
   setResponses: (responses) =>
     set({ responses }),
+
+  setActiveFile: (file) =>
+    set({ activeFile: file }),
 
   setSelectedLens: (lens) =>
     set({ selectedLens: lens }),
