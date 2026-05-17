@@ -12,6 +12,8 @@ import TicketPanel from "../components/ticket/TicketPanel";
 
 import MobileTopbar from "../components/dashboard/MobileTopbar";
 
+import RepoExplorer from "../components/explorer/RepoExplorer";
+
 export default function DashboardPage() {
   return (
     <main
@@ -109,6 +111,8 @@ export default function DashboardPage() {
           <ArchitectureHeatmap />
 
           <TicketPanel />
+
+          <RepoExplorer />
 
         </section>
 
