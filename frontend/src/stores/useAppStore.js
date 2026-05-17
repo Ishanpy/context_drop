@@ -22,6 +22,8 @@ const useAppStore = create((set) => ({
 
   isStreaming: false,
 
+  error: null,
+
   /* =========================
      REPOSITORY EXPLORER
   ========================= */
@@ -65,6 +67,9 @@ const useAppStore = create((set) => ({
 
   setStreaming: (value) =>
     set({ isStreaming: value }),
+
+  setError: (value) =>
+    set({ error: value }),
 
   /* =========================
      REPOSITORY EXPLORER

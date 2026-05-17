@@ -18,7 +18,13 @@ import CodePreview from "../components/explorer/CodePreview";
 
 import ChatThread from "../components/dashboard/ChatThread";
 
+import ErrorState from "../components/feedback/ErrorState";
+
+import useAppStore from "../stores/useAppStore";
+
 export default function DashboardPage() {
+    const {error} = 
+       useAppStore();
 
   return (
 
@@ -124,6 +130,19 @@ export default function DashboardPage() {
         </section>
 
         {/* CAPSULE GRID */}
+        {error && (
+
+  <section className="mt-12">
+
+    <ErrorState
+      title="Repository Analysis Failed"
+
+      description={error}
+    />
+
+  </section>
+
+)}
 
         <section className="mt-12">
 
