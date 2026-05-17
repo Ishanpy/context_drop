@@ -70,8 +70,13 @@ export default function Sidebar() {
           mb-8
           p-3
           rounded-xl
-          hover:bg-navy
-          transition
+          bg-white/5
+          hover:bg-white/10
+          border
+          border-border
+          text-ice
+          transition-all
+          duration-300
         "
       >
         <Menu size={24} />
@@ -100,7 +105,7 @@ export default function Sidebar() {
           <p
             className="
               text-sm
-              text-gray-400
+              text-ice/70
               mt-2
             "
           >
@@ -119,7 +124,7 @@ export default function Sidebar() {
               text-xs
               uppercase
               tracking-widest
-              text-gray-500
+              text-ice/60
               mb-4
             "
           >
@@ -151,7 +156,7 @@ export default function Sidebar() {
               <p
                 className="
                   text-sm
-                  text-gray-400
+                  text-ice/70
                   mt-1
                 "
               >
@@ -190,8 +195,13 @@ export default function Sidebar() {
                 px-4
                 py-3
                 rounded-xl
-                hover:bg-navy
-                transition
+                bg-white/5
+                hover:bg-white/10
+                border
+                border-border
+                text-ice
+                transition-all
+                duration-300
               `}
             >
 

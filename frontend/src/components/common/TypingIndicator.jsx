@@ -14,7 +14,7 @@ export default function TypingIndicator() {
           w-3
           h-3
           rounded-full
-          bg-blue
+          bg-accent
           animate-bounce
         "
       />
@@ -24,7 +24,7 @@ export default function TypingIndicator() {
           w-3
           h-3
           rounded-full
-          bg-blue
+          bg-accent
           animate-bounce
           [animation-delay:200ms]
         "
@@ -35,7 +35,7 @@ export default function TypingIndicator() {
           w-3
           h-3
           rounded-full
-          bg-blue
+          bg-accent
           animate-bounce
           [animation-delay:400ms]
         "

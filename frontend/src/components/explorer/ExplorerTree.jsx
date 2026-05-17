@@ -70,7 +70,7 @@ export default function ExplorerTree({
       <div
         className="
           text-center
-          text-gray-500
+          text-ice/60
           py-10
         "
       >

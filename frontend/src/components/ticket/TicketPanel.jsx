@@ -18,11 +18,13 @@ export default function TicketPanel() {
   return (
     <div
       className="
-        bg-panel
+        bg-panel/70
+        backdrop-blur-xl
         border
         border-border
         rounded-3xl
         p-6
+        shadow-2xl
       "
     >
 
@@ -68,7 +70,7 @@ export default function TicketPanel() {
 
             <p
               className="
-                text-gray-400
+                text-ice/70
                 mt-3
               "
             >

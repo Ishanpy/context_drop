@@ -1,30 +1,18 @@
 import LensSwitcher from "../components/dashboard/LensSwitcher";
-
 import QuestionBar from "../components/dashboard/QuestionBar";
-
 import CapsuleGrid from "../components/capsule/CapsuleGrid";
-
 import RepoAnalytics from "../components/dashboard/RepoAnalytics";
-
 import ArchitectureHeatmap from "../components/dashboard/ArchitectureHeatmap";
-
-import TicketPanel from "../components/ticket/TicketPanel";
-
+import TicketAnalyzer from "../components/ticket/TicketAnalyzer";
 import MobileTopbar from "../components/dashboard/MobileTopbar";
-
 import RepoExplorer from "../components/explorer/RepoExplorer";
-
 import CodePreview from "../components/explorer/CodePreview";
-
 import ChatThread from "../components/dashboard/ChatThread";
-
 import ErrorState from "../components/feedback/ErrorState";
-
 import useAppStore from "../stores/useAppStore";
-
 import ArchitectureGraph from "../components/dashboard/ArchitectureGraph";
-
-
+import BusFactorDashboard from "../components/dashboard/BusFactorDashboard";
+import HealthMonitor from "../components/common/HealthMonitor";
 
 export default function DashboardPage() {
 
@@ -35,13 +23,12 @@ export default function DashboardPage() {
     <div
       className="
         relative
+        w-full
         min-h-screen
-        
         bg-[#020617]
+        overflow-x-hidden
       "
     >
-
-    
 
       {/* MAIN CONTENT */}
 
@@ -49,9 +36,10 @@ export default function DashboardPage() {
         className="
           relative
           z-10
-          flex-1
-          h-screen
+          w-full
+          min-h-screen
           overflow-y-auto
+          overflow-x-hidden
         "
       >
 
@@ -59,12 +47,15 @@ export default function DashboardPage() {
 
         <div
           className="
-            max-w-[1600px]
-            mx-auto
+            w-full
 
-            px-4
-            sm:px-6
-            lg:px-10
+            pl-4
+            sm:pl-6
+            lg:pl-10
+
+            pr-4
+            sm:pr-6
+            lg:pr-10
 
             py-10
           "
@@ -74,27 +65,33 @@ export default function DashboardPage() {
 
           <section>
 
-            <h1
-              className="
-                text-3xl
-                sm:text-4xl
-                lg:text-6xl
+            <div className="flex items-start justify-between mb-4">
+              <h1
+                className="
+                  text-3xl
+                  sm:text-4xl
+                  lg:text-6xl
 
-                font-bold
+                  font-black
+                  tracking-tight
+                  text-cream
 
-                leading-tight
+                  leading-tight
 
-                max-w-5xl
-              "
-            >
-              AI Repository Intelligence
-            </h1>
+                  max-w-5xl
+                "
+              >
+                AI Repository Intelligence
+              </h1>
+              
+              <HealthMonitor />
+            </div>
 
             <p
               className="
                 mt-6
 
-                text-gray-400
+                text-ice/70
 
                 text-base
                 lg:text-lg
@@ -126,17 +123,17 @@ export default function DashboardPage() {
 
             <div
               className="
-                bg-panel/80
+                bg-panel/70
                 backdrop-blur-xl
 
                 border
-                border-white/5
+                border-border
 
                 rounded-3xl
 
                 p-6
 
-                shadow-glow
+                shadow-2xl
 
                 space-y-6
               "
@@ -189,6 +186,14 @@ export default function DashboardPage() {
 
           </section>
 
+          {/* BUS FACTOR DASHBOARD */}
+
+          <section className="mt-12">
+
+            <BusFactorDashboard />
+
+          </section>
+
           {/* LOWER DASHBOARD */}
 
           <section
@@ -205,7 +210,7 @@ export default function DashboardPage() {
 
             <ArchitectureHeatmap />
 
-            <TicketPanel />
+            <TicketAnalyzer />
 
             <RepoExplorer />
 

@@ -12,17 +12,17 @@ export default function RepoExplorer() {
 
     <div
       className="
-        bg-panel/80
+        bg-panel/70
         backdrop-blur-xl
 
         border
-        border-white/5
+        border-border
 
         rounded-3xl
 
         p-6
 
-        shadow-glow
+        shadow-2xl
 
         h-[420px]
 

@@ -13,7 +13,8 @@ export default function EmptyState({
 
     <div
       className="
-        bg-panel
+        bg-panel/70
+        backdrop-blur-xl
 
         border
         border-border
@@ -21,6 +22,8 @@ export default function EmptyState({
         rounded-3xl
 
         p-10
+
+        shadow-2xl
 
         text-center
       "
@@ -51,7 +54,7 @@ export default function EmptyState({
           <Inbox
             size={30}
             className="
-              text-gray-400
+              text-ice/60
             "
           />
 
@@ -74,7 +77,7 @@ export default function EmptyState({
         className="
           mt-3
 
-          text-gray-400
+          text-ice/70
 
           max-w-md
           mx-auto

@@ -177,7 +177,7 @@ export default function CommandPalette() {
                 <p
                   className="
                     text-sm
-                    text-gray-400
+                    text-ice/70
                     mt-1
                   "
                 >

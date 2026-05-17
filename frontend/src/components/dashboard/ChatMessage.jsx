@@ -29,13 +29,14 @@ export default function ChatMessage({
           ${
             isUser
               ? `
-                bg-blue
-                text-white
+                bg-primary
+                text-cream
               `
               : `
-                bg-panel/80
+                bg-panel/70
+                backdrop-blur-xl
                 border
-                border-white/5
+                border-border
               `
           }
         `}

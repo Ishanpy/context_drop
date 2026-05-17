@@ -35,16 +35,16 @@ export default function RepoAnalytics() {
         <div
           key={stat.label}
           className="
-            bg-panel/80
+            bg-panel/70
             backdrop-blur-xl
 
             border
-            border-white/5
+            border-border
 
             rounded-3xl
             p-6
 
-            shadow-glow
+            shadow-2xl
 
             hover:translate-y-[-4px]
             hover:border-blue/30
@@ -56,7 +56,7 @@ export default function RepoAnalytics() {
           <p
             className="
               text-sm
-              text-gray-400
+              text-ice/70
             "
           >
             {stat.label}

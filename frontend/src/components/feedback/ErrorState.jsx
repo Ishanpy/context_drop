@@ -17,7 +17,8 @@ export default function ErrorState({
 
     <div
       className="
-        bg-panel
+        bg-panel/70
+        backdrop-blur-xl
 
         border
         border-red-500/20
@@ -25,6 +26,8 @@ export default function ErrorState({
         rounded-3xl
 
         p-10
+
+        shadow-2xl
 
         text-center
       "
@@ -78,7 +81,7 @@ export default function ErrorState({
         className="
           mt-3
 
-          text-gray-400
+          text-ice/70
 
           max-w-md
           mx-auto

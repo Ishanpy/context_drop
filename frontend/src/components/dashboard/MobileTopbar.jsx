@@ -41,8 +41,13 @@ export default function MobileTopbar() {
         className="
           p-2
           rounded-xl
-          hover:bg-panel
-          transition
+          bg-white/5
+          hover:bg-white/10
+          border
+          border-border
+          text-ice
+          transition-all
+          duration-300
         "
       >
         <Menu size={24} />

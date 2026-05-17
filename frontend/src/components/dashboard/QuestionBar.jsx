@@ -1,158 +1,87 @@
 import { Send } from "lucide-react";
-
 import { useMutation } from "@tanstack/react-query";
-
-import {
-  askRepositoryQuestion,
-} from "../../api/queries";
-
 import useAppStore from "../../stores/useAppStore";
-
 import toast from "react-hot-toast";
-
-import { streamText } from "../../utils/streamText";
-
+import { apiClient } from "../../lib/apiClient";
+import { handleAPIError } from "../../lib/errorHandler";
 
 export default function QuestionBar() {
   const {
     question,
     setQuestion,
-    setResponses,
-    setIsLoading,
-    selectedLens,
-  } = useAppStore();
-
-  const {
     addMessage,
     setStreaming,
-        } = useAppStore();
+    setError,
+  } = useAppStore();
 
   const mutation = useMutation({
-    mutationFn: askRepositoryQuestion,
+    mutationFn: async (query) => {
+      return await apiClient.getCapsule(query);
+    },
 
     onMutate: () => {
-      setIsLoading(true);
-
-      setIsStreaming(true);
+      setStreaming(true);
+      setError(null);
     },
 
     onSuccess: async (data) => {
+      // Add AI response message with full capsule data
+      const aiMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: data.answer,
+        capsuleData: data, // Store full response for CapsuleGrid
+      };
 
-        await new Promise((resolve) =>
-        setTimeout(resolve, 1200)
-    );
+      addMessage(aiMessage);
 
-    setResponses(data.responses || []);
-
-        toast.success(
-        "Repository insights generated"
-        );
+      toast.success(
+        `Analysis complete in ${data.processing_time.toFixed(1)}s`
+      );
     },
 
     onError: (error) => {
-        console.error(error);
-
-        toast.error(
-            "Failed to generate insights"
-        );
+      const errorMessage = handleAPIError(error);
+      setError(errorMessage);
+      
+      toast.error("Failed to analyze repository");
+      
+      console.error("Capsule API Error:", error);
     },
 
     onSettled: () => {
-      setIsLoading(false);
-
-      setIsStreaming(false);
-
+      setStreaming(false);
     },
   });
 
   const handleSubmit = async () => {
+    if (!question.trim()) return;
 
-  if (!question.trim()) return;
+    // Prevent duplicate submissions
+    if (mutation.isPending) return;
 
-  const userMessage = {
-    id: Date.now(),
+    // Add user message
+    const userMessage = {
+      id: Date.now(),
+      role: "user",
+      content: question,
+    };
 
-    role: "user",
+    addMessage(userMessage);
 
-    content: question,
+    const currentQuestion = question;
+    setQuestion("");
+
+    // Call API
+    mutation.mutate(currentQuestion);
   };
 
-  addMessage(userMessage);
-
-  const currentQuestion =
-    question;
-
-  setQuestion("");
-
-  setStreaming(true);
-
-const aiMessageId =
-  Date.now() + 1;
-
-addMessage({
-  id: aiMessageId,
-
-  role: "assistant",
-
-  content: "",
-});
-
-const aiResponse = `
-# Repository Analysis
-
-This repository contains:
-
-- React frontend architecture
-- Zustand global state
-- Repository explorer systems
-- AI interaction workflows
-
-## Engineering Recommendations
-
-\`\`\`js
-const scalableArchitecture = true;
-\`\`\`
-
-## Risk Analysis
-
-- Improve backend caching
-- Add repository indexing
-- Implement vector search
-`;
-
-await streamText({
-
-  text: aiResponse,
-
-  delay: 5,
-
-  onChunk: (chunk) => {
-
-    useAppStore.setState(
-      (state) => ({
-
-        messages:
-          state.messages.map(
-            (message) =>
-
-              message.id === aiMessageId
-                ? {
-                    ...message,
-                    content: chunk,
-                  }
-                : message
-          ),
-
-      })
-    );
-
-  },
-
-});
-
-setStreaming(false);
-
-};
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
 
   return (
     <div
@@ -169,40 +98,56 @@ setStreaming(false);
         onChange={(e) =>
           setQuestion(e.target.value)
         }
+        onKeyPress={handleKeyPress}
         placeholder="Ask ContextDrop about the repository..."
+        disabled={mutation.isPending}
         className="
           flex-1
-          bg-panel
+          bg-panel/70
+          backdrop-blur-xl
           border
           border-border
           rounded-2xl
           px-5
           py-3
           outline-none
+          disabled:opacity-50
+          disabled:cursor-not-allowed
         "
       />
 
       <button
         onClick={handleSubmit}
+        disabled={mutation.isPending || !question.trim()}
         className="
             px-5
             py-3
 
-            bg-blue
-            hover:bg-blue-600
+            bg-primary
+            hover:bg-accent
+            text-cream
 
             rounded-2xl
 
             font-medium
 
-            shadow-glow
+            shadow-2xl
 
             hover:scale-105
 
             transition-all
+            duration-300
+
+            disabled:opacity-50
+            disabled:cursor-not-allowed
+            disabled:hover:scale-100
         "
       >
-        <Send size={20} />
+        {mutation.isPending ? (
+          <div className="animate-spin">⏳</div>
+        ) : (
+          <Send size={20} />
+        )}
       </button>
     </div>
   );

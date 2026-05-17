@@ -7,16 +7,16 @@ export default function CapsuleCard({
   return (
     <div
       className="
-        bg-panel/80
+        bg-panel/70
         backdrop-blur-xl
 
         border
-        border-white/5
+        border-border
 
         rounded-3xl
         p-6
 
-        shadow-glow
+        shadow-2xl
 
         hover:scale-[1.015]
         hover:border-blue/30
@@ -56,7 +56,7 @@ export default function CapsuleCard({
 
       <p
         className="
-          text-gray-400
+          text-ice/70
           mt-4
           leading-relaxed
         "

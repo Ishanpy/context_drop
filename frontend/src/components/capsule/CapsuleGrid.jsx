@@ -1,18 +1,20 @@
 import CapsuleCard from "./CapsuleCard";
-
 import LoadingSkeleton from "../common/LoadingSkeleton";
-
 import useAppStore from "../../stores/useAppStore";
-
 import TypingIndicator from "../common/TypingIndicator";
 
 export default function CapsuleGrid() {
-
   const {
     messages,
-    isLoading,
     isStreaming,
   } = useAppStore();
+
+  // Get the latest assistant message with capsule data
+  const latestCapsuleMessage = messages
+    .filter(m => m.role === "assistant" && m.capsuleData)
+    .pop();
+
+  const capsuleData = latestCapsuleMessage?.capsuleData;
 
   if (isStreaming) {
 
@@ -22,7 +24,8 @@ export default function CapsuleGrid() {
         className="
           mt-10
 
-          bg-panel
+          bg-panel/70
+          backdrop-blur-xl
 
           border
           border-border
@@ -30,6 +33,8 @@ export default function CapsuleGrid() {
           rounded-3xl
 
           p-8
+
+          shadow-2xl
         "
       >
 
@@ -44,7 +49,7 @@ export default function CapsuleGrid() {
 
         <p
           className="
-            text-gray-400
+            text-ice/70
             mt-3
           "
         >
@@ -52,38 +57,6 @@ export default function CapsuleGrid() {
         </p>
 
         <TypingIndicator />
-
-      </div>
-
-    );
-
-  }
-
-  if (isLoading) {
-
-    return (
-
-      <div
-        className="
-          grid
-          grid-cols-1
-          lg:grid-cols-2
-          2xl:grid-cols-3
-
-          gap-6
-          mt-10
-        "
-      >
-
-        {Array.from({ length: 4 }).map(
-          (_, index) => (
-
-            <LoadingSkeleton
-              key={index}
-            />
-
-          )
-        )}
 
       </div>
 
@@ -99,7 +72,8 @@ export default function CapsuleGrid() {
         className="
           mt-10
 
-          bg-panel
+          bg-panel/70
+          backdrop-blur-xl
 
           border
           border-border
@@ -107,6 +81,8 @@ export default function CapsuleGrid() {
           rounded-3xl
 
           p-10
+
+          shadow-2xl
 
           text-center
         "
@@ -123,7 +99,7 @@ export default function CapsuleGrid() {
 
         <p
           className="
-            text-gray-400
+            text-ice/70
             mt-4
           "
         >
@@ -137,38 +113,67 @@ export default function CapsuleGrid() {
 
   }
 
-  return (
-
-    <div
-      className="
-        grid
-        grid-cols-1
-        lg:grid-cols-2
-
-        gap-6
-        mt-10
-      "
-    >
-
-      {messages.map((message) => (
-
+  // If we have capsule data, show detailed insights
+  if (capsuleData) {
+    return (
+      <div className="space-y-6 mt-10">
+        {/* Main Answer */}
         <CapsuleCard
-          key={message.id}
-          title={
-            message.role === "user"
-              ? "User Question"
-              : "AI Response"
-          }
-
-          tag={message.role}
-
-          description={message.content}
+          title="AI Analysis"
+          tag="answer"
+          description={capsuleData.answer}
         />
 
-      ))}
+        {/* Context Files */}
+        {capsuleData.context_files && capsuleData.context_files.length > 0 && (
+          <div>
+            <h3 className="text-xl font-semibold mb-4">
+              Context Files ({capsuleData.context_files.length})
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {capsuleData.context_files.map((file, idx) => (
+                <CapsuleCard
+                  key={idx}
+                  title={file.path}
+                  tag={`${(file.relevance_score * 100).toFixed(0)}% relevant`}
+                  description={`\`\`\`\n${file.content.substring(0, 500)}${file.content.length > 500 ? '...' : ''}\n\`\`\``}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
-    </div>
+        {/* Architecture Insights */}
+        {capsuleData.architecture_insights && (
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Architecture Insights</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <CapsuleCard
+                title="Key Components"
+                tag="architecture"
+                description={capsuleData.architecture_insights.key_components?.join(', ') || 'N/A'}
+              />
+              <CapsuleCard
+                title="Data Flow"
+                tag="architecture"
+                description={capsuleData.architecture_insights.data_flow || 'N/A'}
+              />
+              <CapsuleCard
+                title="Dependencies"
+                tag="architecture"
+                description={capsuleData.architecture_insights.dependencies?.join(', ') || 'N/A'}
+              />
+            </div>
+          </div>
+        )}
 
-  );
+        {/* Processing Time */}
+        <div className="text-center text-ice/60 text-sm">
+          Processing time: {capsuleData.processing_time?.toFixed(2)}s
+        </div>
+      </div>
+    );
+  }
 
+  return null;
 }

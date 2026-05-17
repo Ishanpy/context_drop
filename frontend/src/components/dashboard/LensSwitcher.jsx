@@ -26,13 +26,14 @@ export default function LensSwitcher() {
             py-2
             rounded-xl
             capitalize
-            transition
+            transition-all
+            duration-300
             border
 
             ${
               selectedLens === lens
-                ? "bg-blue border-blue"
-                : "bg-panel border-border"
+                ? "bg-primary hover:bg-accent text-cream border-primary"
+                : "bg-white/5 hover:bg-white/10 text-ice/80 border-border"
             }
           `}
         >

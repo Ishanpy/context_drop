@@ -24,7 +24,7 @@ export default function ExplorerSearch() {
           left-4
           top-1/2
           -translate-y-1/2
-          text-gray-500
+          text-ice/60
         "
       />
 
@@ -49,7 +49,7 @@ export default function ExplorerSearch() {
           bg-white/5
 
           border
-          border-white/5
+          border-border
 
           rounded-2xl
 

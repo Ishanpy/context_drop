@@ -142,12 +142,15 @@ export default function ArchitectureGraph() {
       className="
         h-[500px]
 
-        bg-panel
+        bg-panel/70
+        backdrop-blur-xl
 
         border
         border-border
 
         rounded-3xl
+
+        shadow-2xl
 
         overflow-hidden
       "

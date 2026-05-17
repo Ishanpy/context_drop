@@ -8,7 +8,7 @@ export default function DashboardLayout({
         flex
         overflow-hidden
         bg-navy
-        text-white
+        text-cream
       "
     >
       {children}

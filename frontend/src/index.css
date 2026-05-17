@@ -14,18 +14,25 @@
   transition-duration: 200ms;
 
   transition-timing-function: ease;
+
+  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
 body {
-  overflow: hidden;
-
-  background: #020617;
-
-  color: white;
+  background: #111F22;
+  color: #EBE9DB;
 
   margin: 0;
 

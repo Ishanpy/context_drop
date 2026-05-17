@@ -24,7 +24,7 @@ export default function ChatThread() {
         <div
           className="
             text-center
-            text-gray-500
+            text-ice/60
             pt-20
           "
         >

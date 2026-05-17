@@ -16,17 +16,17 @@ export default function CodePreview() {
   return (
     <div
       className="
-        bg-panel/80
+        bg-panel/70
         backdrop-blur-xl
 
         border
-        border-white/5
+        border-border
 
         rounded-3xl
 
         overflow-hidden
 
-        shadow-glow
+        shadow-2xl
 
         h-[420px]
       "
@@ -38,7 +38,7 @@ export default function CodePreview() {
           py-4
 
           border-b
-          border-white/5
+          border-border
 
           flex
           items-center

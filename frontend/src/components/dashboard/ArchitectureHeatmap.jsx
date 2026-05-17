@@ -6,11 +6,13 @@ export default function ArchitectureHeatmap() {
   return (
     <div
       className="
-        bg-panel
+        bg-panel/70
+        backdrop-blur-xl
         border
         border-border
         rounded-3xl
         p-6
+        shadow-2xl
       "
     >
 
@@ -27,7 +29,7 @@ export default function ArchitectureHeatmap() {
 
         <p
           className="
-            text-gray-400
+            text-ice/70
             mt-2
           "
         >

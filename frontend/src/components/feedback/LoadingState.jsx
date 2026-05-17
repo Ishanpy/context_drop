@@ -11,7 +11,8 @@ export default function LoadingState({
 
     <div
       className="
-        bg-panel
+        bg-panel/70
+        backdrop-blur-xl
 
         border
         border-border
@@ -19,6 +20,8 @@ export default function LoadingState({
         rounded-3xl
 
         p-10
+
+        shadow-2xl
 
         text-center
       "
@@ -63,7 +66,7 @@ export default function LoadingState({
         className="
           mt-3
 
-          text-gray-400
+          text-ice/70
         "
       >
         {description}
