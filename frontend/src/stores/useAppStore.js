@@ -7,7 +7,7 @@ const useAppStore = create((set) => ({
 
   question: "",
 
-  responses: [],
+  messages: [],
 
   activeFile: null,
 
@@ -24,9 +24,18 @@ const useAppStore = create((set) => ({
 
   setQuestion: (value) =>
     set({ question: value }),
+  
+  addMessage: (message) =>
+    set((state) => ({
+      messages: [
+        ...state.messages,
+        message,
+    ],
+  })),
 
-  setResponses: (responses) =>
-    set({ responses }),
+    clearMessages: () =>
+      set({ messages: [] }),
+
 
   setActiveFile: (file) =>
     set({ activeFile: file }),

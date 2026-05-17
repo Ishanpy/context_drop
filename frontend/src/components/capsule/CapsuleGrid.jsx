@@ -7,88 +7,117 @@ import useAppStore from "../../stores/useAppStore";
 import TypingIndicator from "../common/TypingIndicator";
 
 export default function CapsuleGrid() {
+
   const {
-    responses,
+    messages,
     isLoading,
     isStreaming,
-
   } = useAppStore();
 
-  
   if (isStreaming) {
-  return (
-    <div
-      className="
-        mt-10
-        bg-panel
-        border
-        border-border
-        rounded-3xl
-        p-8
-      "
-    >
 
-      <h2
+    return (
+
+      <div
         className="
-          text-2xl
-          font-semibold
+          mt-10
+
+          bg-panel
+
+          border
+          border-border
+
+          rounded-3xl
+
+          p-8
         "
       >
-        AI is analyzing repository...
-      </h2>
 
-      <p
-        className="
-          text-gray-400
-          mt-3
-        "
-      >
-        Generating contextual engineering insights.
-      </p>
+        <h2
+          className="
+            text-2xl
+            font-semibold
+          "
+        >
+          AI is analyzing repository...
+        </h2>
 
-      <TypingIndicator />
+        <p
+          className="
+            text-gray-400
+            mt-3
+          "
+        >
+          Generating contextual engineering insights.
+        </p>
 
-    </div>
-  );
-}
+        <TypingIndicator />
+
+      </div>
+
+    );
+
+  }
 
   if (isLoading) {
+
     return (
+
       <div
         className="
           grid
           grid-cols-1
           lg:grid-cols-2
           2xl:grid-cols-3
+
           gap-6
           mt-10
         "
       >
+
         {Array.from({ length: 4 }).map(
           (_, index) => (
+
             <LoadingSkeleton
               key={index}
             />
+
           )
         )}
+
       </div>
+
     );
+
   }
 
-  if (!responses.length) {
+  if (!messages.length) {
+
     return (
+
       <div
         className="
           mt-10
+
           bg-panel
+
           border
           border-border
+
           rounded-3xl
+
           p-10
+
           text-center
         "
       >
-        <h2 className="text-2xl font-semibold">
+
+        <h2
+          className="
+            text-2xl
+            font-semibold
+          "
+        >
           Ask your first repository question
         </h2>
 
@@ -101,30 +130,45 @@ export default function CapsuleGrid() {
           ContextDrop will generate
           AI-powered repository insights.
         </p>
+
       </div>
+
     );
+
   }
 
   return (
+
     <div
       className="
         grid
         grid-cols-1
         lg:grid-cols-2
+
         gap-6
         mt-10
       "
     >
-      {responses.map((response) => (
+
+      {messages.map((message) => (
+
         <CapsuleCard
-          key={response.title}
-          title={response.title}
-          tag={response.tag}
-          description={
-            response.description
+          key={message.id}
+          title={
+            message.role === "user"
+              ? "User Question"
+              : "AI Response"
           }
+
+          tag={message.role}
+
+          description={message.content}
         />
+
       ))}
+
     </div>
+
   );
+
 }

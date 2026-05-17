@@ -11,6 +11,8 @@ import useAppStore from "../../stores/useAppStore";
 import toast from "react-hot-toast";
 
 
+
+
 export default function QuestionBar() {
   const {
     question,
@@ -20,18 +22,29 @@ export default function QuestionBar() {
     selectedLens,
   } = useAppStore();
 
+  const {
+    addMessage,
+        } = useAppStore();
+
   const mutation = useMutation({
     mutationFn: askRepositoryQuestion,
 
     onMutate: () => {
       setIsLoading(true);
+
+      setIsStreaming(true);
     },
 
-    onSuccess: (data) => {
-        setResponses(data.responses || []);
+    onSuccess: async (data) => {
+
+        await new Promise((resolve) =>
+        setTimeout(resolve, 1200)
+    );
+
+    setResponses(data.responses || []);
 
         toast.success(
-            "Repository insights generated"
+        "Repository insights generated"
         );
     },
 
@@ -45,17 +58,59 @@ export default function QuestionBar() {
 
     onSettled: () => {
       setIsLoading(false);
+
+      setIsStreaming(false);
+
     },
   });
 
-  function handleSubmit() {
-    if (!question.trim()) return;
+  const handleSubmit = async () => {
 
-    mutation.mutate({
-      question,
-      lens: selectedLens,
+  if (!question.trim()) return;
+
+  const userMessage = {
+    id: Date.now(),
+
+    role: "user",
+
+    content: question,
+  };
+
+  addMessage(userMessage);
+
+  const currentQuestion =
+    question;
+
+  setQuestion("");
+
+  setTimeout(() => {
+
+    addMessage({
+      id: Date.now() + 1,
+
+      role: "assistant",
+
+      content: `
+# Repository Analysis
+
+This repository contains:
+
+- React frontend architecture
+- Zustand state management
+- Modular dashboard systems
+- AI interaction patterns
+
+## Suggested Improvements
+
+\`\`\`js
+const improvedArchitecture = true;
+\`\`\`
+      `,
     });
-  }
+
+  }, 1000);
+
+};
 
   return (
     <div
@@ -88,11 +143,21 @@ export default function QuestionBar() {
       <button
         onClick={handleSubmit}
         className="
-          bg-blue
-          px-5 py-3
-          rounded-2xl
-          hover:opacity-90
-          transition
+            px-5
+            py-3
+
+            bg-blue
+            hover:bg-blue-600
+
+            rounded-2xl
+
+            font-medium
+
+            shadow-glow
+
+            hover:scale-105
+
+            transition-all
         "
       >
         <Send size={20} />
