@@ -124,7 +124,7 @@ await streamText({
 
   text: aiResponse,
 
-  delay: 10,
+  delay: 5,
 
   onChunk: (chunk) => {
 
