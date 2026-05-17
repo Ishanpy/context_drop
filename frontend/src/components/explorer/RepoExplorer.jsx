@@ -1,11 +1,15 @@
 import ExplorerTree from "./ExplorerTree";
 
-import { repositoryTree } from "../../mock/repositoryTree";
-
 import ExplorerSearch from "./ExplorerSearch";
 
+import {
+  repositoryTree,
+} from "../../mock/repositoryData";
+
 export default function RepoExplorer() {
+
   return (
+
     <div
       className="
         bg-panel/80
@@ -24,14 +28,17 @@ export default function RepoExplorer() {
 
         flex
         flex-col
-    "
+      "
     >
+
+      {/* HEADER */}
 
       <div
         className="
           flex
           items-center
           justify-between
+
           mb-6
         "
       >
@@ -47,32 +54,31 @@ export default function RepoExplorer() {
 
       </div>
 
+      {/* SEARCH */}
+
+      <ExplorerSearch />
+
+      {/* TREE */}
+
       <div
         className="
-        overflow-y-auto
-        pr-2
-        flex-1
-    "
-    >
-        <ExplorerSearch />
-        <div
-  className="
-    overflow-y-auto
-    pr-2
-    flex-1
-  "
->
+          flex-1
 
-  <ExplorerTree
-    tree={repositoryTree}
-  />
+          overflow-y-auto
 
-</div>
+          pr-2
+          mt-4
+        "
+      >
 
-    
+        <ExplorerTree
+          tree={repositoryTree}
+        />
 
-</div>
+      </div>
 
     </div>
+
   );
+
 }
